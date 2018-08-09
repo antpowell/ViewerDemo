@@ -1,0 +1,25 @@
+{
+    "extends": "extended",
+    "engine": {
+        "antialiasing": false,
+        "engineOptions": {
+            "preserveDrawableBuffer": true
+        }
+    },
+    "model": {
+        "url": "https://playground.babylonjs.com/scenes/Rabbit.babylon",
+
+        "animation": {
+            "autoStart": true
+        }
+    },
+    "camera": {
+        "behaviors": {
+            "autoRotate": 0
+        }
+    },
+    "scene": {
+        "debug": false,
+        "renderInBackground": true
+    }
+}

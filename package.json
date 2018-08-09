@@ -1,0 +1,20 @@
+{
+  "name": "ViewerDemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "game.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babylonjs-viewer": "3.3.0-alpha.15"
+  },
+  "source": true,
+  "dependencies": {
+    "babylonjs": "^3.2.0"
+  }
+}

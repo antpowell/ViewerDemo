@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GIFExporter Babylonjs - Viewer DEMO</title>
+    <style>
+        canvas {
+            width: 100vw;
+            height: 56.25vh;
+        }
+
+        button {
+            margin: 15px auto;
+            background-color: #797C86;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+        }
+    </style>
+    <script src="https://preview.babylonjs.com/viewer/babylon.viewer.js"></script>
+</head>
+
+<body>
+    <!-- <babylon id="viewerCanvas"></babylon> -->
+    <babylon model="https://encoding.assets.remix3d.com/003/059f2766c027458787256ebb47a4094e/004/08586686162851047564894176372cu61/325fa597405e4cabbf2296b12545f1a8.fbx.gltf" engine.engine-options.preserve-drawing-buffer="true">
+    </babylon>
+    <button id="captureBtn">Create Animated GIF</button>
+    <script src="/game.0359e092.js"></script>
+</body>
+
+</html>
