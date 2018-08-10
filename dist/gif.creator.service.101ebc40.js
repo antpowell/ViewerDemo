@@ -365,8 +365,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     Object.defineProperty(exports, "__esModule", { value: true });
     var NeuQuant = /** @class */ (function () {
         /**
-         * Constructor: init
-         * sets up arrays
+         * Constructor: NeuQuant
+         * Arguments:
+         * pixels - array of pixels in RGB format
+         * samplefac - sampling factor 1 to 30 where lower is better quality
+         * >
+         * > pixels = [r, g, b, r, g, b, r, g, b, ..]
+         * >
          */
         function NeuQuant(pixels, samplefac) {
             this.ncycles = 100; // number of learning cycles
@@ -670,6 +675,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
                 map[k++] = this.network[j][1];
                 map[k++] = this.network[j][2];
             }
+            console.log('map', map);
             return map;
         };
         return NeuQuant;
@@ -709,6 +715,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             var G = parseInt(pixel.substr(2, 2), 16);
             var B = parseInt(pixel.substr(4, 2), 16);
             var pixelIndex = this._neuQuant.lookupRGB(R, G, B);
+            // if(R === 6 && G === 6 && B === 6 ){
+            // 	console.log('666 found on  lookup is', this._neuQuant.lookupRGB(R, G, B))
+            // }
+            // if(this._neuQuant.lookupRGB(R, G, B) === 1){
+            // 	console.log(`output was index 1 for ${R},${G},${B}`);
+            // }
             return pixelIndex;
         };
         ColorTableGenerator.prototype.pad = function (color) {
@@ -909,6 +921,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             // Put out the final code.
             this.output(ent, outs);
             this.output(this._EOFCode, outs);
+            console.log(outs);
         };
         // ----------------------------------------------------------------------------
         LZWEncoder.prototype.encode = function (os) {
@@ -1003,6 +1016,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             console.log("generating frame " + this.frameCount);
             this.writeGraphicControlExtension();
             this.writeImageDescriptor();
+            this.writeLocalColorTable();
             this.writeImageData();
         };
         GIFGenerator.prototype.getStream = function () {
@@ -1058,15 +1072,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
             this.stream.write(0x0); /* Block Terminator */
         };
         GIFGenerator.prototype.writeImageData = function () {
-            return __awaiter(this, void 0, void 0, function () {
-                var encoder;
-                return __generator(this, function (_a) {
-                    encoder = new LZWEncoder(this.width, this.height, this.frameIndexedPixels, 8);
-                    encoder.encode(this.stream);
-                    console.log("completed frame " + this.frameCount);
-                    return [2 /*return*/];
-                });
-            });
+            var encoder = new LZWEncoder(this.width, this.height, this.frameIndexedPixels, 8);
+            encoder.encode(this.stream);
+            console.log("completed frame " + this.frameCount);
         };
         GIFGenerator.prototype.writeTrailer = function () {
             this.stream.write(0x3b); /* Trailer Marker */
@@ -1137,18 +1145,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
     function generateGIF(frames, colorLookup) {
         function mapPixelsToIndex(frames, colorLookup) {
+            var _this = this;
             var indexedFrames = [];
-            frames.forEach(function (frame, index) {
-                var indexedPixels = [];
-                frame.forEach(function (pixel) {
-                    indexedPixels.push(lookup(pixel));
+            frames.forEach(function (frame, index) { return __awaiter(_this, void 0, void 0, function () {
+                var indexedPixels;
+                return __generator(this, function (_a) {
+                    indexedPixels = [];
+                    frame.forEach(function (pixel) {
+                        indexedPixels.push(lookup(pixel));
+                    });
+                    indexedFrames.push(indexedPixels);
+                    return [2 /*return*/];
                 });
-                indexedFrames.push(indexedPixels);
-            });
+            }); });
             return indexedFrames;
         }
         function lookup(pixel) {
-            return /* colorLookup[pixel] ? colorLookup[pixel] : */ _colorTableGen.lookupRGB(pixel);
+            return _colorTableGen.lookupRGB(pixel);
         }
         var indexedFrames = mapPixelsToIndex(frames, colorLookup);
         indexedFrames.forEach(function (frame) {
@@ -1159,9 +1172,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function collectFrames(frame) {
         _frameCollection.push(new Uint8Array(frame));
     }
+    // TODO: Find better color sampling technique that works with neuquant
     function getColorSamplingFrames(frames) {
         /* every 5 frames placed in sampling frames array */
-        var samplingFrames = frames.filter(function (frame, index) { return (index + 1) % 5 === 0; });
+        // const samplingFrames = frames.filter((frame, index) => (index + 1) % 4 === 0);
+        var samplingFrames = frames.filter(function (frame, index) { return index === 2 && index === (frame.length - 1) / 2 && index === frame.length - 1; });
+        // console.log(samplingFrames);
         /* Combine arrays in samplingFrames into one Uint8Array */
         return samplingFrames.reduce(function (accFrame, frame) {
             var sampling = new Uint8Array(accFrame.length + frame.length);
@@ -1176,9 +1192,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         var _b = _a.data, job = _b.job, params = _b.params;
         switch (job) {
             case 'createGIF':
+                console.log('Frames recieved generating GIF');
                 var width = params.width, height = params.height;
                 var _c = processFrames(_frameCollection, width, height), numericalRGBFrames = _c.numericalRGBFrames, stringRGBFrames = _c.stringRGBFrames;
-                var samplingFrame = getColorSamplingFrames(numericalRGBFrames);
+                // const samplingFrame = getColorSamplingFrames(numericalRGBFrames);
+                var samplingFrame = numericalRGBFrames[3];
                 var colorLookup = createColorTable(samplingFrame, width, height);
                 var gifData = generateGIF(stringRGBFrames, colorLookup);
                 ctx.postMessage(gifData);
@@ -1192,7 +1210,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 });
 /* ----------------------------------------------Worker Router END---------------------------------------------------------- */
 
-},{"process":11}],13:[function(require,module,exports) {
+},{"process":11}],8:[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -1221,7 +1239,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '63276' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '56666' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -1362,5 +1380,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[13,9], null)
+},{}]},{},[8,9], null)
 //# sourceMappingURL=/gif.creator.service.101ebc40.map

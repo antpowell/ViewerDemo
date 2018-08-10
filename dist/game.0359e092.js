@@ -369,81 +369,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var captureBtn = document.getElementById('captureBtn');
 
-var canvas = document.getElementById('viewerCanvas');
-
-// BabylonViewer.disableInit = true;
-
-// const configs = {
-//     extends: 'extended',
-//     engine: {
-//         antialiasing: false,
-//         engineOptions: {
-//             preserveDrawableBuffer: true
-//         }
-//     },
-//     model: {
-//         url: "https://playground.babylonjs.com/scenes/Rabbit.babylon",
-//         animation: {
-//             autoStart: true
-//         }
-//     },
-//     camera: {
-//         behaviors: {
-//             autoRotate: 0
-//         }
-//     },
-//     scene: {
-//         debug: false,
-//         renderInBackground: true
-//     }
-// };
-
-// // url: 'https://encoding.assets.remix3d.com/003/059f2766c027458787256ebb47a4094e/004/08586686162851047564894176372cu61/325fa597405e4cabbf2296b12545f1a8.fbx.gltf',
-
-// const bbViewer = new BabylonViewer.DefaultViewer(canvas, configs);
-
-// bbViewer.onInitDoneObservable.add(() => {
-//     console.log('rendered')
-//     bbViewer.canvas.width = "1200";
-//     bbViewer.canvas.height = "600";
-
-//     bbViewer.viewerManager.onViewerAddedObservable.add(function (viewer) {
-//         console.log('config', viewer.configuration);
-//         viewer.onEngineInitObservable.add(function (engine) {
-//             console.log('engine', engine)
-
-//             const recorder = new GIFExporter(engine, {
-//                 delay: 50,
-//                 duration: 3000
-//             });
-
-//             captureBtn.addEventListener('click', function () {
-
-//                 recorder.download('babylonjs.gif');
-
-//             })
-//         })
-//     });
-// })
-
-
 BabylonViewer.viewerManager.onViewerAddedObservable.add(function (viewer) {
-    console.log('config', viewer.configuration);
+
     viewer.onEngineInitObservable.add(function (engine) {
-        console.log('engine', engine);
 
         var recorder = new _babylonjsGifexporter2.default(engine, {
             delay: 50,
-            duration: 3000
+            duration: 4000
         });
 
         captureBtn.addEventListener('click', function () {
-
+            captureBtn.disabled = true;
             recorder.download('babylonjs.gif');
+            captureBtn.disabled = false;
         });
     });
 });
-},{"babylonjs-gifexporter":6}],13:[function(require,module,exports) {
+},{"babylonjs-gifexporter":6}],8:[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -472,7 +414,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '63276' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '56666' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -613,5 +555,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[13,4], null)
+},{}]},{},[8,4], null)
 //# sourceMappingURL=/game.0359e092.map
